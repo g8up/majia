@@ -52,7 +52,7 @@ var cookieUrl = function (c) {
 
 var getAllCookiesByDomain = function (domain) {
 	var res = {}
-	return denodify(chrome.cookies.getAll)({
+	return chrome.cookies.getAll({
 		domain: domain
 	}).then(function (cookies) {
 		res.cookies = cookies;
@@ -83,7 +83,7 @@ var resetAllCookiesByDomain = function (domain, cookies) {
 
 var removeAllChromeCookies = function (cookies) {
 	return Promise.all(cookies.map(function (c) {
-		return denodify(chrome.cookies.remove)({
+		return chrome.cookies.remove({
 			url: cookieUrl(c),
 			name: c.name,
 			storeId: c.storeId,
@@ -248,3 +248,8 @@ chrome.runtime.onMessage.addListener(function (msg, sender, cb) {
 
 	return true;
 });
+
+// 在 Service Worker 环境中确保全局变量存在
+if (typeof chrome !== 'undefined' && chrome.runtime) {
+	// 这里可以放置任何需要在 SW 环境初始化的代码
+}
